@@ -11,8 +11,8 @@ public interface IAutorRepository extends JpaRepository<Autor,Long> {
     Optional<Autor> findByNombreIgnoreCase(String nombre);
     @Query("SELECT a FROM Autor a LEFT JOIN FETCH a.librosPropios")
     List<Autor> buscarAutoresConLibros();
-    @Query("SELECT a FROM Autor a WHERE a.fechaDeNacimiento <= :fechaDeNacimiento " +
-            "AND a.fechaDeFallecimiento IS NULL OR a.fechaDeFallecimiento > :fechaDeNacimiento")
-    List<Autor> buscarAutoresVivosEnAnio(Integer fechaDeNacimiento);
+    @Query("SELECT a FROM Autor a LEFT JOIN FETCH a.librosPropios WHERE a.fechaDeNacimiento <= :anio " +
+            "AND (a.fechaDeFallecimiento IS NULL OR a.fechaDeFallecimiento > :anio)")
+    List<Autor> buscarAutoresVivosEnAnio(Integer anio);
 
 }

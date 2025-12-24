@@ -3,9 +3,9 @@ package com.example.aluracursos.challengeliteralura.model;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
+
 @Entity
 @Table(name = "autores")
 public class Autor {
@@ -18,7 +18,8 @@ public class Autor {
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL)
     private List<Libro> librosPropios = new ArrayList<>();
 
-    public Autor(){}
+    public Autor() {
+    }
 
     public Autor(DatosAutor datosAutor) {
         this.nombre = datosAutor.nombre();
@@ -46,21 +47,23 @@ public class Autor {
         librosPropios.add(libro);
     }
 
-    public void obtenerLosTitulosDeLosLibros() {
-        librosPropios.forEach(Libro::getTitulo);
-    }
-
     @Override
     public String toString() {
+        List<String> librosTitulos = librosPropios.stream()
+                .map(Libro::getTitulo)
+                .collect(Collectors.toList());
+
         return """
-            -------------------------
-            Autor: %s
-            Nacimiento: %s
-            Fallecimiento: %s
-            """.formatted(
+                -------------------------
+                Autor: %s
+                Nacimiento: %s
+                Fallecimiento: %s
+                Libros: %s
+                """.formatted(
                 nombre,
                 fechaDeNacimiento != null ? fechaDeNacimiento : "Desconocido",
-                fechaDeFallecimiento != null ? fechaDeFallecimiento : "Desconocido"
+                fechaDeFallecimiento != null ? fechaDeFallecimiento : "Desconocido",
+                librosTitulos
         );
     }
 }

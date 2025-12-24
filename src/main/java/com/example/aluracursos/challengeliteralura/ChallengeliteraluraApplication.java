@@ -21,8 +21,6 @@ public class ChallengeliteraluraApplication implements CommandLineRunner {
 		SpringApplication.run(ChallengeliteraluraApplication.class, args);
 	}
 
-
-
 	@Override
 	public void run(String... args) throws Exception {
 		Principal principal = new Principal(libroRepository,autorRepository);

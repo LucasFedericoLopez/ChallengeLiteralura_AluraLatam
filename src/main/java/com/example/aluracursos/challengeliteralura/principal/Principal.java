@@ -5,8 +5,6 @@ import com.example.aluracursos.challengeliteralura.repositorio.IAutorRepository;
 import com.example.aluracursos.challengeliteralura.repositorio.ILibroRepository;
 import com.example.aluracursos.challengeliteralura.service.ConsumoAPI;
 import com.example.aluracursos.challengeliteralura.service.ConvierteDatos;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -15,9 +13,6 @@ public class Principal {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private final String URL_BASE = "https://gutendex.com/books/?";
     private ConvierteDatos conversor = new ConvierteDatos();
-    private List<DatosLibros> datosLibros = new ArrayList<>();
-    private List<Libro> libros = new ArrayList<>();
-    private Set<Autor> autoresRegistrados = new HashSet<>();
     private ILibroRepository libroRepository;
     private IAutorRepository autorRepository;
 
@@ -55,9 +50,9 @@ public class Principal {
                 case (4):
                     listarAutoresVivosEnUnAnio();
                     break;
-                /*case (5):
+                case (5):
                     listarLibrosPorIdioma();
-                    break;*/
+                    break;
                 case (0):
                     System.out.println("Gracias por utilizar Literalura");
                     break;
@@ -106,15 +101,52 @@ public class Principal {
 
     private void listarAutoresRegistrados() {
         autorRepository.buscarAutoresConLibros().
-                forEach(a -> System.out.println(
-                        "Autor: " + a.getNombre() + "Nacimiento: " + a.getFechaDeNacimiento() +
-                        "Fallecimiento: " + a.getFechaDeFallecimiento() +
-                        "Libros: " + a.getLibrosPropios()));
+                forEach(System.out::println);
     }
 
     private void listarAutoresVivosEnUnAnio() {
         System.out.println("Ingrese el año vivo de autor(es) que desea buscar");
-        var fechaNacimiento = teclado.nextInt();
-        autorRepository.buscarAutoresVivosEnAnio(fechaNacimiento).forEach(a -> System.out.println(a.toString()));
+        var anio = teclado.nextInt();
+        teclado.nextLine();
+        autorRepository.buscarAutoresVivosEnAnio(anio).forEach(System.out::println);
+    }
+
+    private void listarLibrosPorIdioma() {
+        var menuIdioma = """
+                Ingrese el idioma deseado para buscar el libro:
+                es - Español
+                en - Ingles
+                fr - Frances
+                pt - Portugues
+                
+                S - Salir
+                """;
+
+        System.out.println(menuIdioma);
+        var opcionIdioma = teclado.nextLine().toLowerCase().trim();
+
+        switch (opcionIdioma) {
+            case ("es"):
+                mostrarLibrosEn("es");
+                break;
+            case ("en"):
+                mostrarLibrosEn("en");
+                break;
+            case ("fr"):
+                mostrarLibrosEn("fr");
+                break;
+            case ("pt"):
+                mostrarLibrosEn("pt");
+                break;
+            case ("s"):
+                break;
+            default:
+                System.out.println("Operacion invalida");
+                break;
+        }
+    }
+
+    private void mostrarLibrosEn(String idioma) {
+        libroRepository.findByIdioma(idioma).forEach(System.out::println);
     }
 }
